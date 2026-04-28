@@ -152,3 +152,6 @@ dependencies:
 
   lua_module_uart:
     path: ../../../components/lua_modules/lua_module_uart
+
+  lua_module_dwin:
+    path: ../../../components/lua_modules/lua_module_dwin

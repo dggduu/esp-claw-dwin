@@ -6,18 +6,20 @@
 #include "basic_demo_lua_modules.h"
 
 #include "lua_module_adc.h"
-#include "lua_module_delay.h"
+#include "lua_module_board_manager.h"
+#include "lua_module_button.h"
 #include "lua_module_capability.h"
+#include "lua_module_delay.h"
+#include "lua_module_esp_heap.h"
 #include "lua_module_gpio.h"
 #include "lua_module_i2c.h"
 #include "lua_module_led_strip.h"
-#include "lua_module_storage.h"
-#include "lua_module_button.h"
-#include "lua_module_esp_heap.h"
-#include "lua_module_system.h"
-#include "lua_module_board_manager.h"
 #include "lua_module_mcpwm.h"
+#include "lua_module_storage.h"
+#include "lua_module_system.h"
 #include "lua_module_uart.h"
+
+#include "lua_module_dwin.h"
 
 #if defined(CONFIG_ESP_BOARD_DEV_AUDIO_CODEC_SUPPORT)
 #include "lua_module_audio.h"
@@ -32,100 +34,104 @@
 
 extern const char *basic_demo_fatfs_base_path;
 
-esp_err_t basic_demo_lua_modules_register(void)
-{
-    esp_err_t err;
+esp_err_t basic_demo_lua_modules_register(void) {
+  esp_err_t err;
 
-    err = lua_module_delay_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_delay_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_capability_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_capability_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_storage_register(basic_demo_fatfs_base_path);
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_storage_register(basic_demo_fatfs_base_path);
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_gpio_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_gpio_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_led_strip_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_led_strip_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_i2c_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_i2c_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
 #if defined(CONFIG_ESP_BOARD_DEV_AUDIO_CODEC_SUPPORT)
-    err = lua_module_audio_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_audio_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 #endif
 
-    err = lua_module_button_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_button_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_display_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_display_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_board_manager_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_board_manager_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
 #if defined(CONFIG_ESP_BOARD_DEV_LCD_TOUCH_I2C_SUPPORT)
-    err = lua_module_lcd_touch_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_lcd_touch_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 #endif
 
 #if defined(CONFIG_ESP_BOARD_DEV_CAMERA_SUPPORT)
-    err = lua_module_camera_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_camera_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 #endif
 
-    err = lua_module_esp_heap_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_esp_heap_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_system_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_system_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_mcpwm_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_mcpwm_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_uart_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_uart_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    err = lua_module_adc_register();
-    if (err != ESP_OK) {
-        return err;
-    }
+  err = lua_module_adc_register();
+  if (err != ESP_OK) {
+    return err;
+  }
 
-    return ESP_OK;
+  err = lua_module_dwin_register();
+  if (err != ESP_OK) {
+    return err;
+  }
+
+  return ESP_OK;
 }
