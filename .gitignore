@@ -50,4 +50,13 @@ docs/**/*.bin
 
 
 # Server
+*.exe
+*.zip
+*.png
+*.log
+**/windows/
+**/screenshots/
+
+components/silk-v3-decoder/windows/
+
 tools/
