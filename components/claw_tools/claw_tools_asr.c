@@ -431,3 +431,59 @@ esp_err_t claw_tools_asr_transcribe(const char *audio_file_path, char *out_text,
   }
   return ret;
 }
+
+esp_err_t claw_tools_asr_transcribe_buffer(const uint8_t *audio_data,
+                                           size_t audio_len,
+                                           const char *format_hint,
+                                           char *out_text, size_t out_size) {
+  if (!audio_data || audio_len == 0 || !out_text || out_size == 0) {
+    return ESP_ERR_INVALID_ARG;
+  }
+
+  // 确保临时目录存在
+  mkdir("/fatfs/tmp", 0777);
+
+  // 生成唯一临时文件名
+  char temp_raw[128];
+  char temp_wav[128];
+  snprintf(temp_raw, sizeof(temp_raw), "/fatfs/tmp/asr_raw_%lld",
+           esp_timer_get_time());
+  snprintf(temp_wav, sizeof(temp_wav), "/fatfs/tmp/asr_%lld.wav",
+           esp_timer_get_time());
+
+  // 1. 写入原始数据到临时文件
+  FILE *f = fopen(temp_raw, "wb");
+  if (!f) {
+    ESP_LOGE(TAG, "Cannot create temp file %s", temp_raw);
+    return ESP_ERR_NO_MEM;
+  }
+  fwrite(audio_data, 1, audio_len, f);
+  fclose(f);
+
+  bool need_decode = (format_hint && strcmp(format_hint, "silk") == 0) ||
+                     (audio_len > 8 && memcmp(audio_data, "\x02#!SILK", 6) ==
+                                           0); // 简易 magic 检测
+  const char *upload_path = temp_raw;
+
+  if (need_decode) {
+    // 2. SILK -> WAV
+    esp_err_t ret = decode_silkv3_qq(temp_raw, temp_wav);
+    if (ret != ESP_OK) {
+      ESP_LOGE(TAG, "SILK decode failed from buffer");
+      remove(temp_raw);
+      return ret;
+    }
+    upload_path = temp_wav;
+  }
+
+  // 3. 上传并转写
+  esp_err_t ret = claw_tools_asr_upload(upload_path, out_text, out_size);
+
+  // 4. 清理临时文件
+  remove(temp_raw);
+  if (need_decode) {
+    remove(temp_wav);
+  }
+
+  return ret;
+}

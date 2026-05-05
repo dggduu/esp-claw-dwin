@@ -65,6 +65,20 @@ esp_err_t claw_tools_asr_transcribe(const char *audio_file_path, char *out_text,
  * @return esp_err_t
  */
 esp_err_t decode_silkv3_qq(const char *silk_path, const char *wav_path);
+
+/**
+ * @brief 从内存缓冲区转写语音（SILK/AMR/WAV）
+ * @param audio_data  音频数据指针
+ * @param audio_len   数据长度
+ * @param format_hint 格式提示："silk", "amr", "wav" 或 NULL 自动判断
+ * @param out_text    输出文本缓冲区
+ * @param out_size    缓冲区大小
+ * @return ESP_OK on success
+ */
+esp_err_t claw_tools_asr_transcribe_buffer(const uint8_t *audio_data,
+                                           size_t audio_len,
+                                           const char *format_hint,
+                                           char *out_text, size_t out_size);
 #ifdef __cplusplus
 }
 #endif

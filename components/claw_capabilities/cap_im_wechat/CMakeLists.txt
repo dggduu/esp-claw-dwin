@@ -13,4 +13,5 @@ idf_component_register(
         json
         mbedtls
         console
+        claw_tools
 )
