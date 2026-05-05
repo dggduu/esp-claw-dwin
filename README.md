@@ -1,6 +1,16 @@
+## 修改点：
+1. 添加ASR接口（目前仅适配 OpenAI 接口）
+2. 对qq的语音附件部分函数进行HOOK,拦截并送入ASR组件进行转写并将识别结果重新送回文本消息处理相关函数
+3. 适配自制的迪文屏串口通信协议
+4. 因为迪文屏只支持显示GBK,因此引入 `https://github.com/panjingwei1945/gbk2utf2uni`，因为字库文件比较大所以我希望它能存放在文件系统上，因此精简了这个库，用以提供`UFT82GBK`函数
+
+本 fork 的演示视频:
+[bilibili](https://www.bilibili.com/video/BV16woCBFEqL)
+
+
 <div align="center">
 
-  <a href="https://esp-claw.com/en/">
+  <a href="https://esp-claw.com/">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./docs/src/assets/logos/logo-f.svg" />
       <source media="(prefers-color-scheme: light)" srcset="./docs/src/assets/logos/logo.svg" />
@@ -8,9 +18,9 @@
     </picture>
   </a>
 
-  <h1>ESP-Claw 🦞 AI Agent Framework for IoT Devices</h1>
+  <h1>ESP-Claw 🦞 物联网设备 AI 智能体框架</h1>
 
-  <h3>💬 Chat as Creation · 🚀 Millisecond Response · 🧩 Smart and Extensible · 😋 Grows with You</h3>
+  <h3>💬聊天即造物 · 🚀毫秒级响应 · 🧩智能可扩展 · 😋越用越懂你</h3>
 
   <p>
     <a href="https://www.espressif.com">
@@ -21,136 +31,136 @@
     </a>
   </p>
 
-  <a href="https://esp-claw.com/en/">Home</a>
+  <a href="https://esp-claw.com/zh-cn/">主页</a>
   |
-  <a href="https://esp-claw.com/en/tutorial/">Docs</a>
+  <a href="https://esp-claw.com/zh-cn/tutorial/">文档</a>
   |
-  <a href="https://esp-claw.com/en/flash/">Online Flashing</a>
+  <a href="https://esp-claw.com/zh-cn/flash/">在线烧录</a>
   |
-  <a href="https://esp-claw.com/en/reference-project/build-from-source/">Build from Source</a>
+  <a href="https://esp-claw.com/zh-cn/reference-project/build-from-source/">源码编译</a>
   |
-  <a href="./README_CN.md">简体中文</a>
+  <a href="./README.md">English</a>
 
 </div>
 
-**ESP-Claw** is Espressif's **Chat Coding** AI agent framework for IoT devices. It defines device behavior through conversation and completes the full loop of sensing, decision-making, and execution locally on Espressif chips. Inspired by the OpenClaw concept and reimplemented in C, ESP-Claw is lightweight, intelligent, and continuously evolving. With just an ESP32-series chip that costs only a few dollars, you can experience what makes ESP-Claw so nimble.
+**ESP-Claw** 是乐鑫推出的面向物联网设备的 **Chat Coding「聊天造物」** 式 AI Agent 框架，以对话定义设备行为，在乐鑫芯片上本地完成感知、决策与执行的完整闭环。ESP-Claw 自 OpenClaw 理念出发，用 C 语言重新实现，轻盈、智能、成长。仅需一块几美元的 ESP32 系列芯片，便可体验 ESP-Claw 的轻灵特性。
 
 <div align="center">
   <img alt="From traditional IoT to Edge Agent" src="./docs/static/from-traditional-iot-to-edge-agent.webp" width="90%" />
 </div>
 
-## 🌟 Key Features
+## 🌟核心特性
 
-Traditional IoT usually stops at connectivity: devices can connect to the network, but they cannot think; they can execute commands, but they cannot make decisions. ESP-Claw brings the Agent Runtime down onto Espressif chips, turning them from passive executors into active decision-making centers.
+传统 IoT 只停留在连接层——设备能联网，却不能思考；能执行，却不能决策。ESP-Claw 将 Agent Runtime 下沉至乐鑫芯片，让芯片从被动的"执行端"转变为主动的"决策中心"。
 
 <table align="center">
   <tr>
-    <th><div align="center"> 💬 Chat as Creation </div></th>
-    <th><div align="center"> ⚙️ Event Driven </div></th>
+    <th><div align="center"> 💬 聊天造物 </div></th>
+    <th><div align="center"> ⚙️ 事件驱动 </div></th>
   </tr>
   <tr>
     <th>
       <div align="center">
-        IM chat + dynamic Lua loading
+        IM 聊天 + Lua 动态加载
         <br />
-        Ordinary users can define device behavior without programming
+        普通用户即可定义设备行为，无需编程
       </div>
     </th>
     <th>
       <div align="center">
-        Any event can trigger the Agent Loop and more
+        任意事件可触发 Agent Loop 等动作
         <br />
-        Response can be as fast as milliseconds
-      </div>
-    </th>
-  </tr>
-  <tr>
-    <th width="45%">
-      <video src="https://github.com/user-attachments/assets/717a4dae-fbd3-4364-afca-2d45432f156e" />
-    </th>
-    <th width="45%">
-      <video src="https://github.com/user-attachments/assets/5a274a4a-e1dc-4c13-81aa-fb1c22d470bf" />
-    </th>
-  </tr>
-
-  <tr>
-    <td colspan="2"><!-- spacer row --></td>
-  </tr>
-
-  <tr>
-    <th><div align="center"> 🧬 Structured Memory </div></th>
-    <th><div align="center"> 📤 MCP Communication </div></th>
-  </tr>
-  <tr>
-    <th>
-      <div align="center">
-        Organize memories in a structured way
-        <br />
-        Privacy stays off the cloud
-      </div>
-    </th>
-    <th>
-      <div align="center">
-        Supports standard MCP devices
-        <br />
-        Works as both Server and Client
+        最快毫秒级响应
       </div>
     </th>
   </tr>
   <tr>
     <th width="45%">
-      <video src="https://github.com/user-attachments/assets/2c8bcaa4-3606-49d3-9b70-86ad3234d48f" />
+      <video src="https://github.com/user-attachments/assets/9ec020c2-d133-4ab5-adaa-28817415bc26" />
     </th>
     <th width="45%">
-      <video src="https://github.com/user-attachments/assets/b1f71cee-e428-4b92-ad7e-d7816839f866" />
+      <video src="https://github.com/user-attachments/assets/c3613e52-61a8-49c2-a224-4a436a4c9e3e" />
     </th>
   </tr>
 
   <tr>
-    <td colspan="2"><!-- spacer row --></td>
+    <td colspan="2"><!-- 分隔行 --></td>
   </tr>
 
   <tr>
-    <th><div align="center"> 🧰 Ready Out of the Box </div></th>
-    <th><div align="center"> 🧩 Component Extensibility </div></th>
+    <th><div align="center"> 🧬 结构化记忆 </div></th>
+    <th><div align="center"> 📤 MCP 通讯 </div></th>
   </tr>
   <tr>
     <th>
       <div align="center">
-        Quick setup with Board Manager
+        有条理地沉淀记忆内容
         <br />
-        Supports one-click flashing
+        隐私不上云
       </div>
     </th>
     <th>
       <div align="center">
-        Every module can be trimmed as needed
+        支持连接标准 MCP 设备
         <br />
-        You can also add your own component integrations
+        具备 Server/Client 双重身份
+      </div>
+    </th>
+  </tr>
+  <tr>
+    <th width="45%">
+      <video src="https://github.com/user-attachments/assets/1fe6d67c-469d-405d-a6ec-648aa2681b15" />
+    </th>
+    <th width="45%">
+      <video src="https://github.com/user-attachments/assets/b582ac5b-dd14-486f-b531-495597aa2af6" />
+    </th>
+  </tr>
+
+  <tr>
+    <td colspan="2"><!-- 分隔行 --></td>
+  </tr>
+
+  <tr>
+    <th><div align="center"> 🧰 开箱即用 </div></th>
+    <th><div align="center"> 🧩 组件扩展 </div></th>
+  </tr>
+  <tr>
+    <th>
+      <div align="center">
+        基于 Board Manager 快速配置
+        <br />
+        支持一键烧录
+      </div>
+    </th>
+    <th>
+      <div align="center">
+        所有模块均可按需裁剪
+        <br />
+        也可自行添加组件适配
       </div>
     </th>
   </tr>
 </table>
 
-## 📦 Quick Start
+## 📦快速开始
 
 <div align="center">
   <img src="docs/src/assets/images/claw-breadboard-photo.jpg" width="80%" alt="ESP-Claw on ESP32-S3 Breadboard" />
 </div>
 
-ESP-Claw already supports multiple ESP32-S3-based development boards, including breadboards, M5Stack CoreS3, and more. Supported boards in [`./application/edge_agent/boards/`](./application/edge_agent/boards/) can be flashed online directly: configuration and flashing are done entirely in the browser, with no need to compile firmware locally or install a development environment first.
+ESP-Claw 目前已适配基于 ESP32-S3 的多款开发版，例如面包板、M5Stack CoreS3 等。[已支持的开发版](./application/edge_agent/boards/)可以直接在线烧录：通过网页即可完成配置与烧录，无需额外编译固件或安装开发环境。
 
 <div align="center">
-  <a href="https://esp-claw.com/en/flash/">
+  <a href="https://esp-claw.com/zh-cn/flash/">
     <img src="./docs/static/flash-via-browser-button.svg" width="200" />
   </a>
 </div>
 
-You can also build ESP-Claw locally. Please refer to the [local build documentation](https://esp-claw.com/en/tutorial/) for board adaptation, building, and flashing. Boards not listed above, as well as chips like the ESP32-P4, can also be supported through local builds and flashing.
+你也可以在本地编译 ESP-Claw。请参考[本地编译文档](https://esp-claw.com/zh-cn/tutorial/)适配、编译和烧录。未列于上述列表的开发版、ESP32-P4 等芯片还可通过本地编译烧录实现。
 
-You can find practical examples in our [documentation](https://esp-claw.com/en/tutorial/).
+我们的[文档](https://esp-claw.com/zh-cn/tutorial/)中有可供参考的使用样例。
 
-### Supported Platforms
+### 支持的平台
 
 <div align="center">
   <picture>
@@ -160,36 +170,36 @@ You can find practical examples in our [documentation](https://esp-claw.com/en/t
   </picture>
 </div>
 
-**LLM**: ESP-Claw now supports both OpenAI-style APIs and Anthropic-style APIs. It natively supports GPT models from OpenAI, Qwen models from Alibaba Cloud Bailian, Claude models from Anthropic, DeepSeek models from DeepSeek API, and also supports custom endpoints.
+**LLM**: ESP-Claw 现已支持 OpenAI 风格 API 和 Anthropic 风格 API，原生支持 OpenAI 提供的 GPT 系列模型、阿里云百炼提供的 Qwen 系列模型、Anthropic 提供的 Claude 系列模型、DeepSeek 官方 API 提供的 DeepSeek 模型等，也可以自定义 Endpoint。
 
-> [!TIP]
+> ![TIP]
 >
-> ESP-Claw's self-programming capability depends on models with strong tool use and instruction-following ability. We recommend `gpt-5.4`, `qwen3.6-plus`, `claude4.6-sonnet`, `deepseek-v4-pro` or models with comparable capability.
+> ESP-Claw 的自编程能力需要调用工具和遵循指令能力较强的模型，推荐使用 `gpt-5.4`、`qwen3.6-plus`、`claude4.6-sonnet`、`deepseek-v4-pro` 或类似性能的模型。
 
-**IM**: ESP-Claw supports Telegram, QQ, Feishu, and WeChat, and can be extended further.
+**IM**: ESP-Claw 支持 Telegram、QQ、飞书、微信四大聊天软件，并可扩展。
 
-> [!NOTE]
+> ![NOTE]
 >
-> This project is still under active development. If you run into any issues, feel free to open an issue.
+> 当前项目仍处于开发阶段，如遇问题欢迎提交 issue。
 
-## 📷 Follow Us
+## 📷关注我们
 
-If this project helps you, please consider giving it a star. ⭐⭐⭐⭐⭐
+如果这个项目对您有所帮助，欢迎点亮一颗星！⭐⭐⭐⭐⭐
 
 ### Star History
 
 <div align="center">
   <a href="https://www.star-history.com/?repos=espressif%2Fesp-claw&type=date&legend=top-left">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&theme=dark&legend=top-left" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&legend=top-left" />
-    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&legend=top-left" />
-  </picture>
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&theme=dark&legend=top-left" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&legend=top-left" />
+      <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=espressif/esp-claw&type=date&legend=top-left" />
+    </picture>
   </a>
 </div>
 
-## Acknowledgements
+## 致谢
 
-Inspired by [OpenClaw](https://github.com/openclaw/openclaw).
+灵感来自 [OpenClaw](https://github.com/openclaw/openclaw)。
 
-The implementation of Agent Loop, IM communication, and related capabilities on ESP32 also draws on [MimiClaw](https://github.com/memovai/mimiclaw).
+Agent Loop 和 IM 通讯等功能在 ESP32 上的实现参考了 [MimiClaw](https://github.com/memovai/mimiclaw)。

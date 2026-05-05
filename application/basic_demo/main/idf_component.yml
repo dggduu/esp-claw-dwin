@@ -1,22 +1,22 @@
 ## IDF Component Manager Manifest File
 dependencies:
   espressif/esp_board_manager:
-    version: "^0.5.7"
+    version: ^0.5.7
     public: true
   espressif/esp_wifi_remote:
-    version: ">=0.10,<2.0"
+    version: '>=0.10,<2.0'
     rules:
-      - if: "target in [esp32p4]"
+    - if: target in [esp32p4]
   espressif/esp_hosted:
-    version: "2.12.3"
+    version: 2.12.3
     rules:
-      - if: "target in [esp32p4]"
+    - if: target in [esp32p4]
 
   espressif2022/esp_emote_expression:
-    version: "^1.0.0"
+    version: ^1.0.0
 
   espressif2022/esp_emote_gfx:
-    version: "3.0.2"
+    version: 3.0.2
 
   cap_cli:
     path: ../../../components/claw_capabilities/cap_cli
@@ -90,6 +90,12 @@ dependencies:
   claw_skill:
     path: ../../../components/claw_modules/claw_skill
 
+  claw_tools:
+    path: ../../../components/claw_tools
+
+  silk-v3-decoder:
+    path: ../../../components/silk-v3-decoder
+
   esp_painter:
     path: ../../../components/common/esp_painter
 
@@ -98,7 +104,7 @@ dependencies:
 
   lua_module_audio:
     matches:
-      - if: $CONFIG{ESP_BOARD_DEV_AUDIO_CODEC_SUPPORT} == True
+    - if: $CONFIG{ESP_BOARD_DEV_AUDIO_CODEC_SUPPORT} == True
     path: ../../../components/lua_modules/lua_module_audio
 
   lua_module_board_manager:
@@ -112,7 +118,7 @@ dependencies:
 
   lua_module_camera:
     matches:
-      - if: $CONFIG{ESP_BOARD_DEV_CAMERA_SUPPORT} == True
+    - if: $CONFIG{ESP_BOARD_DEV_CAMERA_SUPPORT} == True
     path: ../../../components/lua_modules/lua_module_camera
 
   lua_module_delay:
@@ -135,7 +141,7 @@ dependencies:
 
   lua_module_lcd_touch:
     matches:
-      - if: $CONFIG{ESP_BOARD_DEV_LCD_TOUCH_I2C_SUPPORT} == True
+    - if: $CONFIG{ESP_BOARD_DEV_LCD_TOUCH_I2C_SUPPORT} == True
     path: ../../../components/lua_modules/lua_module_lcd_touch
 
   lua_module_led_strip:
@@ -155,3 +161,5 @@ dependencies:
 
   lua_module_dwin:
     path: ../../../components/lua_modules/lua_module_dwin
+  espressif/esp_audio_codec: ^2.4.0
+  78/esp-opus: ^1.0.5
